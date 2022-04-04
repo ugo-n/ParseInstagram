@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.parseinstagram.MainActivity
 import com.example.parseinstagram.Post
 import com.example.parseinstagram.PostAdapter
@@ -22,6 +23,8 @@ open class FeedFragment : Fragment() {
     lateinit var postRecyclerView: RecyclerView
 
     lateinit var adapter: PostAdapter
+
+    lateinit var swipeContainer: SwipeRefreshLayout
 
     var allPosts: MutableList<Post> = mutableListOf()
 
@@ -49,7 +52,26 @@ open class FeedFragment : Fragment() {
 
         queryPosts()
 
+        swipeContainer = view.findViewById(R.id.swipeContainer)
+        // Setup refresh listener which triggers new data loading
+
+        swipeContainer.setOnRefreshListener {
+            // Your code to refresh the list here.
+            // Make sure you call swipeContainer.setRefreshing(false)
+            // once the network request has completed successfully.
+            queryPosts()
+        }
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light);
+
+
+
     }
+
 
     //Query for all posts in out server
     open fun queryPosts(){
@@ -68,9 +90,10 @@ open class FeedFragment : Fragment() {
                         for(post in posts){
                             Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser()?.username)
                         }
-
+                        allPosts.clear()
                         allPosts.addAll(posts)
                         adapter.notifyDataSetChanged()
+                        swipeContainer.setRefreshing(false)
                     }
                 }
             }

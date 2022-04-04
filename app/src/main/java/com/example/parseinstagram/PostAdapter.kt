@@ -26,6 +26,7 @@ class PostAdapter(val context: Context, val posts: List<Post>) : RecyclerView.Ad
         return posts.size
     }
 
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val tvUsername : TextView
         val ivPhoto: ImageView
@@ -45,5 +46,8 @@ class PostAdapter(val context: Context, val posts: List<Post>) : RecyclerView.Ad
 
             Glide.with(itemView.context).load(post.getImage()?.url).into(ivPhoto)
         }
+
     }
+
+
 }
